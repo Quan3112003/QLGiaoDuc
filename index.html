@@ -656,7 +656,7 @@
         font-size: 0.98em !important;
       }
     }
-    }
+    
   </style>
 </head>
 <body>
@@ -985,8 +985,14 @@
       var btnToggleSidebar = document.getElementById('btnToggleSidebar');
       var sidebar = document.getElementById('adminSidebar');
       if (btnToggleSidebar && sidebar) {
-        btnToggleSidebar.addEventListener('click', function() {
-          sidebar.classList.toggle('show');
+        btnToggleSidebar.addEventListener('click', function(e) {
+          e.stopPropagation();
+          // Luôn bỏ d-none trước khi show
+          sidebar.classList.remove('d-none');
+          setTimeout(function() {
+            sidebar.classList.add('show');
+            sidebar.focus && sidebar.focus();
+          }, 10);
         });
       }
       // Ẩn sidebar khi click ra ngoài (mobile)
@@ -994,6 +1000,10 @@
         if (window.innerWidth <= 768 && sidebar && sidebar.classList.contains('show')) {
           if (!sidebar.contains(e.target) && e.target !== btnToggleSidebar) {
             sidebar.classList.remove('show');
+            // Ẩn luôn nếu đang ở mobile
+            setTimeout(function(){
+              if(window.innerWidth <= 768) sidebar.classList.add('d-none');
+            }, 300);
           }
         }
       });
